@@ -17,6 +17,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.tasks.OnFailureListener
 import android.provider.Settings
+import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -78,6 +79,9 @@ class MainActivity : ComponentActivity() {
                         LocationComposable()
                     }
                     // TODO 2: Add a button to call getCurrentLocation for retrieving current location
+                    Button(onClick = { getCurrentLocation() }) {
+                        Text(text = "Get current location")
+                    }
                 }
 
             }
@@ -149,6 +153,14 @@ class MainActivity : ComponentActivity() {
                 return
             }
             // TODO 3 Add a fusedLocationClient function to retrieve the current location and set the marker to point to that location
+            fusedLocationClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                CancellationTokenSource().token
+            ).addOnSuccessListener { location: Location? ->
+                location?.let {
+                    latLngState.value = LatLng(it.latitude, it.longitude)
+                }
+            }
         }
     }
 
@@ -169,4 +181,3 @@ class MainActivity : ComponentActivity() {
     }
 
 }
-
